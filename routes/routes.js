@@ -5,4 +5,4 @@ import { createUser,loginUser,updateRecord,getGooglePlaces } from '../controller
 router.post("/user", createUser);
 router.post("/login-user", loginUser);
 router.put("/user", updateRecord);
-router.get("/places",getGooglePlaces)
+router.get("/places/:place",getGooglePlaces)
