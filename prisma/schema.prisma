@@ -15,11 +15,14 @@ model User {
   email                      String   @unique
   fullName                   String
   address                    String
-  phoneNumber                Int   
-  password                   String   
-  criminalRecord             Boolean?   
-  isInsured                  Boolean? 
-  carName                    String? 
-  carModel                   String? 
-  carRegisteration           String? 
+  phoneNumber                String
+  password                   String
+  criminalRecord             Boolean?
+  isInsured                  Boolean?
+  insuranceCompany           String?
+  carName                    String?
+  carModel                   String?
+  carRegisteration           String?
+  userType                   String
+  isProfileCompleted         Boolean
 }
