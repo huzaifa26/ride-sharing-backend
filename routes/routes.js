@@ -1,6 +1,7 @@
 import express from 'express';
+import { getGooglePlaces } from '../controllers/places.js';
+import { createUser,loginUser,updateRecord } from '../controllers/users.js';
 export const router = express.Router();
-import { createUser,loginUser,updateRecord,getGooglePlaces } from '../controllers/users.js';
 
 router.post("/user", createUser);
 router.post("/login-user", loginUser);

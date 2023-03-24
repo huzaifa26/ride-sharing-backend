@@ -23,6 +23,7 @@ model User {
   carName                    String?
   carModel                   String?
   carRegisteration           String?
+  isAvailable                Boolean?
   userType                   String
   isProfileCompleted         Boolean
 }
