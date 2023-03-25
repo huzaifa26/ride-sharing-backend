@@ -8,13 +8,9 @@ export async function createUser(req, res) {
     address,
     phoneNumber,
     password,
-    // criminalRecord,
-    // isInsured,
-    // carName,
-    // carModel,
-    // carRegistration,
     userType,
     isProfileCompleted,
+    isAvailable
   } = req.body;
 
   try {
@@ -25,13 +21,9 @@ export async function createUser(req, res) {
         address,
         phoneNumber,
         password,
-        // criminalRecord,
-        // isInsured,
-        // carName,
-        // carModel,
-        // carRegistration,
         userType,
         isProfileCompleted,
+        isAvailable
       },
     });
 
@@ -105,5 +97,3 @@ export async function updateRecord(req, res) {
     res.status(500).json({ message: 'Failed to update record.' });
   }
 }
-
-
