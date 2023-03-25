@@ -1,6 +1,7 @@
 import { prisma } from "../index.js";
-import { eventEmitter } from "../index.js";
-import SseChannel from 'sse-channel';
+// import { eventEmitter } from "../index.js";
+// import SseChannel from 'sse-channel';
+import { io } from "../index.js";
 
 
 export async function getAvailableDrivers(req, res) {
@@ -50,27 +51,25 @@ export async function addRide(req, res) {
   }
 }
 
-export async function rideRequestUpdates(req, res) {
-  const {userId} = req.params;
-  const sseConnection = req.headers.accept === 'text/event-stream';
+// export async function rideRequestUpdates(req, res) {
+//   const {userId} = req.params;
+//   const sseConnection = req.headers.accept === 'text/event-stream';
 
-  if (!sseConnection) {
-    res.status(400).send('SSE connection required!');
-  }
+//   if (!sseConnection) {
+//     res.status(400).send('SSE connection required!');
+//   }
 
-  // Set up SSE channel for the user
-  const channel = new SseChannel();
-  channel.addClient(req, res);
+//   // Set up SSE channel for the user
+//   const channel = new SseChannel();
+//   channel.addClient(req, res);
 
-  // Listen for rideRequestAccepted events and send updates to the user's SSE channel
-  eventEmitter.on('rideRequestAccepted', (data) => {
-    console.log(+data.acceptedBy, +userId);
-    console.log(+data.acceptedBy === +userId);
-    if (+data.acceptedBy === +userId) {
-      channel.send({ data });
-    }
-  });
-}
+//   // Listen for rideRequestAccepted events and send updates to the user's SSE channel
+//   eventEmitter.on('rideRequestAccepted', (data) => {
+//     if (+data.acceptedBy === +userId) {
+//       channel.send({ data });
+//     }
+//   });
+// }
 
 export async function rideRequestAction(req, res) {
   const { id, isAccepted } = req.body;
@@ -91,9 +90,13 @@ export async function rideRequestAction(req, res) {
       }
     })
 
-    eventEmitter.emit('rideRequestAccepted', {
-      acceptedBy: req.body.acceptedBy
-    });
+    console.log(req.body.acceptedBy)
+    console.log(io.sockets.sockets.keys())
+    io.to(req.body.acceptedBy).emit('rideRequestAccepted', { acceptedBy: req.body.acceptedBy });
+
+    // eventEmitter.emit('rideRequestAccepted', {
+    //   acceptedBy: req.body.acceptedBy
+    // });
 
     res.status(200).json(ride);
   } catch (error) {

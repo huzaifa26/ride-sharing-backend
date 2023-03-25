@@ -1,7 +1,7 @@
 import express from 'express';
 import { getGooglePlaces } from '../controllers/places.js';
 import { createUser,loginUser,updateRecord } from '../controllers/users.js';
-import { addRide, getAvailableDrivers, rideRequestAction, rideRequestUpdates } from "../controllers/ride.js";
+import { addRide, getAvailableDrivers, rideRequestAction } from "../controllers/ride.js";
 
 export const router = express.Router();
 
@@ -13,5 +13,5 @@ router.get("/places/:place",getGooglePlaces)
 router.get("/drivers",getAvailableDrivers)
 router.post("/ride",addRide)
 
-router.get('/ride-request-updates/:userId',rideRequestUpdates);
+// router.get('/ride-request-updates/:userId',rideRequestUpdates);
 router.put('/ride-request-action',rideRequestAction);
