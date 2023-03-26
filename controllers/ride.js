@@ -73,7 +73,7 @@ export async function addRide(req, res) {
 
 export async function rideRequestAction(req, res) {
   const { id, isAccepted } = req.body;
-
+  console.log(req.body)
   try {
     const updatedRecord = await prisma.ride.update({
       where: {
@@ -90,17 +90,31 @@ export async function rideRequestAction(req, res) {
       }
     })
 
-    console.log(req.body.acceptedBy)
-    console.log(io.sockets.sockets.keys())
-    io.to(req.body.acceptedBy).emit('rideRequestAccepted', { acceptedBy: req.body.acceptedBy });
-
-    // eventEmitter.emit('rideRequestAccepted', {
-    //   acceptedBy: req.body.acceptedBy
-    // });
+    io.to(req.body.acceptedBy).emit('rideRequestAccepted', { isAccepted: isAccepted });
 
     res.status(200).json(ride);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to update record.' });
+  }
+}
+
+
+export async function getDriverRides(req, res) {
+  const { driverId } = req.params;
+
+  try {
+    const driverRides = await prisma.ride.findMany({
+      where: {
+        driverId: parseInt(driverId),
+      },
+      include: {
+        parent: true,
+      },
+    })
+    res.status(200).json(driverRides);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Failed to get record.' });
   }
 }
