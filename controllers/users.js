@@ -56,6 +56,27 @@ export async function loginUser(req, res) {
   }
 }
 
+export async function getActiveRidesForParent(req, res) {
+  const { userId } = req.params;
+  try {
+    const ride = await prisma.ride.findMany({
+      where: {
+        parentId:parseInt(userId),
+        isAccepted:true,
+        isCompleted:false
+      },
+      include:{
+        driver:true
+      }
+    });
+    console.log(ride);
+    res.status(200).json(ride);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'cannot fetch active rides' });
+  }
+}
+
 export async function updateRecord(req, res) {
   const { id } = req.body;
   console.log(id);
