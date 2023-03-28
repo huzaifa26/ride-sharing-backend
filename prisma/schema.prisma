@@ -11,34 +11,60 @@ datasource db {
 }
 
 model User {
-  id                         Int      @id @default(autoincrement())
-  email                      String   @unique
-  fullName                   String
-  address                    String
-  phoneNumber                String
-  password                   String
-  criminalRecord             Boolean?
-  isInsured                  Boolean?
-  insuranceCompany           String?
-  carName                    String?
-  carModel                   String?
-  carRegisteration           String?
-  isAvailable                Boolean?
-  userType                   String
-  isProfileCompleted         Boolean
-  ParentRides                Ride[] @relation("ParentRides")
-  DriverRides                Ride[] @relation("DriverRides")
+  id                 Int            @id @default(autoincrement())
+  email              String         @unique
+  fullName           String
+  address            String
+  phoneNumber        String
+  password           String
+  criminalRecord     Boolean?
+  isInsured          Boolean?
+  insuranceCompany   String?
+  carName            String?
+  carModel           String?
+  carRegisteration   String?
+  isAvailable        Boolean?
+  userType           String
+  isProfileCompleted Boolean
+  ParentRides        Ride[]         @relation("ParentRides")
+  DriverRides        Ride[]         @relation("DriverRides")
+  Conversation       Conversation?  @relation(fields: [conversationId], references: [id])
+  conversationId     Int?
+  Message            Message[]
+  ParentConversation Conversation[] @relation("ParentConversation")
+  DriverConversation Conversation[] @relation("DriverConversation")
 }
 
 model Ride {
-  id            Int      @id @default(autoincrement())
-  pickup        String
-  dropoff       String
-  createdAt     DateTime @default(now())
-  isAccepted    Boolean?
-  isCompleted   Boolean
-  parent        User     @relation("ParentRides",fields: [parentId], references: [id])
-  driver        User     @relation("DriverRides",fields: [driverId], references: [id])
-  parentId      Int
-  driverId      Int
+  id          Int      @id @default(autoincrement())
+  pickup      String
+  dropoff     String
+  createdAt   DateTime @default(now())
+  isAccepted  Boolean?
+  isCompleted Boolean
+  parent      User     @relation("ParentRides", fields: [parentId], references: [id])
+  driver      User     @relation("DriverRides", fields: [driverId], references: [id])
+  parentId    Int
+  driverId    Int
+}
+
+model Conversation {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  messages  Message[]
+  parent    User      @relation("ParentConversation", fields: [parentId], references: [id])
+  driver    User      @relation("DriverConversation", fields: [driverId], references: [id])
+  parentId  Int
+  driverId  Int
+  User      User[]
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  content        String
+  sender         User         @relation(fields: [senderId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  senderId       Int
+  conversationId Int
 }

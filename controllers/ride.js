@@ -11,6 +11,7 @@ export async function getAvailableDrivers(req, res) {
       where: {
         userType: "Driver",
         isAvailable: true,
+
       },
       take: 10,
       include: {
@@ -154,12 +155,14 @@ export async function getDriverRides(req, res) {
         OR: [
           { isAccepted: true },
           { isAccepted: null }
-        ]
+        ],
+        isCompleted:false
       },
       include: {
         parent: true,
       },
     })
+    console.log(driverRides);
     res.status(200).json(driverRides);
   } catch (error) {
     console.log(error);
