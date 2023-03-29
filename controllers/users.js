@@ -105,7 +105,7 @@ export async function updateRecord(req, res) {
         carModel,
         carRegisteration,
         isProfileCompleted:true,
-        isAvailable:false,
+        isAvailable:true,
       },
     });
 
