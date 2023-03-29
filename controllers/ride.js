@@ -11,7 +11,6 @@ export async function getAvailableDrivers(req, res) {
       where: {
         userType: "Driver",
         isAvailable: true,
-
       },
       take: 10,
       include: {
@@ -41,17 +40,6 @@ export async function addRide(req, res) {
     isCompleted
   } = req.body;
 
-  // try {
-  // const ride = await prisma.ride.findMany({
-  //   where: {
-  //     parentId: parseInt(parentId),
-  //     driverId: parseInt(driverId),
-  //     pickup: pickup,
-  //     dropoff: dropoff
-  //   },
-  // })
-  // console.log(ride);
-  // if(ride.length === 0){
   try {
     const ride = await prisma.ride.create({
       data: {
@@ -73,34 +61,7 @@ export async function addRide(req, res) {
     console.log(error)
     res.status(500).json({ error: error });
   }
-  // }else if(ride.length > 0){
-  // Update the record
-  // }
-  // } catch (error) {
-  //   console.log(error)
-  //   res.status(500).json({ error: error });
-  // }
 }
-
-// export async function rideRequestUpdates(req, res) {
-//   const {userId} = req.params;
-//   const sseConnection = req.headers.accept === 'text/event-stream';
-
-//   if (!sseConnection) {
-//     res.status(400).send('SSE connection required!');
-//   }
-
-//   // Set up SSE channel for the user
-//   const channel = new SseChannel();
-//   channel.addClient(req, res);
-
-//   // Listen for rideRequestAccepted events and send updates to the user's SSE channel
-//   eventEmitter.on('rideRequestAccepted', (data) => {
-//     if (+data.acceptedBy === +userId) {
-//       channel.send({ data });
-//     }
-//   });
-// }
 
 export async function rideRequestAction(req, res) {
   const { id, isAccepted, acceptedBy } = req.body;
@@ -184,6 +145,30 @@ export async function markRideComplete(req, res) {
     })
     io.to(acceptedBy).emit('rideRequestAccepted', { message: "Ride completed" });
     res.status(200).json(driverRides);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Failed to get record.' });
+  }
+}
+
+export async function getActiveRideForParent(req, res) {
+  const { userId } = req.params;
+  try {
+    const parentActiveRides = await prisma.ride.findMany({
+      where: {
+        parentId: parseInt(userId),
+        isAccepted: true,
+        isCompleted:false
+      },
+      include: {
+        driver: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
+    console.log(parentActiveRides);
+    res.status(200).json(parentActiveRides);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Failed to get record.' });

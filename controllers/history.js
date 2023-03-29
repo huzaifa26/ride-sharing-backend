@@ -12,7 +12,10 @@ export async function getHistory(req, res) {
         },
         include:{
           driver:true
-        }
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
       })
       res.status(200).json(history)
     } catch (error) {
@@ -26,7 +29,10 @@ export async function getHistory(req, res) {
         },
         include:{
           parent:true
-        }
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
       })
 
       res.status(200).json(history)

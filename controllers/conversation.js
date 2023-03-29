@@ -37,7 +37,7 @@ export async function createMessages(req, res) {
       data: { content, senderId, conversationId },
     });
     console.log(req.body.acceptedBy)
-    io.to(req.body.acceptedBy).emit('message', { message: "message recieved" });
+    io.to(req.body.acceptedBy).emit('message', { acceptedBy: req.body.acceptedBy,senderId:senderId });
     res.status(200).json(createConversation)
   } catch (error) {
     console.log(error);

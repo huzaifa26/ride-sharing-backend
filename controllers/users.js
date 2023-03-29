@@ -67,7 +67,10 @@ export async function getActiveRidesForParent(req, res) {
       },
       include:{
         driver:true
-      }
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     console.log(ride);
     res.status(200).json(ride);
@@ -116,5 +119,32 @@ export async function updateRecord(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to update record.' });
+  }
+}
+
+export async function updateProfile(req,res){
+  const { id } = req.body;
+  const newData={...req.body};
+  console.log(newData);
+  try {
+    const updatedProfile = await prisma.user.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: req.body,
+    });
+
+    console.log(updatedProfile);
+
+    // const user=await prisma.user.findUnique({
+    //   where:{
+    //     id:parseInt(id)
+    //   }
+    // })
+    // delete user.password
+    res.status(200).json({user:updatedProfile});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to update Profile.' });
   }
 }
