@@ -47,7 +47,7 @@ export async function addRide(req, res) {
         parentId,
         driverId,
         pickup,
-        passengers:parseInt(passengers),
+        passengers: parseInt(passengers),
         dropoff,
         isCompleted
       },
@@ -66,7 +66,7 @@ export async function addRide(req, res) {
 }
 
 export async function rideRequestAction(req, res) {
-  const { id, isAccepted, acceptedBy } = req.body;
+  const { id, isAccepted, acceptedBy, uId, passengers } = req.body;
   try {
     const updatedRecord = await prisma.ride.update({
       where: {
@@ -79,6 +79,21 @@ export async function rideRequestAction(req, res) {
 
     if (isAccepted) {
       try {
+
+        const getUser = await prisma.user.findFirst({
+          where: {
+            id: parseInt(uId)
+          }
+        })
+        const updatePassengerRecord = await prisma.user.update({
+          where: {
+            id: parseInt(uId)
+          },
+          data: {
+            totalPassenger: parseInt(passengers) + parseInt(getUser.totalPassenger)
+          }
+        })
+
         const deleteRecords = await prisma.ride.deleteMany({
           where: {
             parentId: parseInt(acceptedBy),
@@ -86,6 +101,8 @@ export async function rideRequestAction(req, res) {
             isCompleted: false
           }
         })
+
+
       } catch (error) {
         console.log(error);
         throw new Error(error);
@@ -134,7 +151,7 @@ export async function getDriverRides(req, res) {
 }
 
 export async function markRideComplete(req, res) {
-  const { id, acceptedBy } = req.body;
+  const { id, acceptedBy, uId, passengers } = req.body;
 
   try {
     const driverRides = await prisma.ride.update({
@@ -145,6 +162,22 @@ export async function markRideComplete(req, res) {
         isCompleted: true
       }
     })
+
+    const getUser = await prisma.user.findFirst({
+      where: {
+        id: parseInt(uId)
+      }
+    })
+
+    const updatePassengerRecord = await prisma.user.update({
+      where: {
+        id: parseInt(uId)
+      },
+      data: {
+        totalPassenger:parseInt(getUser.totalPassenger) - parseInt(passengers) 
+      }
+    })
+
     io.to(acceptedBy).emit('rideRequestAccepted', { message: "Ride completed" });
     res.status(200).json(driverRides);
   } catch (error) {

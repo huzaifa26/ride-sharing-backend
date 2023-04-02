@@ -11,7 +11,7 @@ const server = createServer(app);
 export const io = new Server(server, { cors: { origin: '*' } });
 
 io.on('connection', (socket) => {
-  console.log(`Client ${socket.id} connected`);
+  // console.log(`Client ${socket.id} connected`);
   
   socket.on('joinRideRoom', (roomId) => {
     // console.log(`Client ${socket.id} left room ${roomId}`);
@@ -19,12 +19,12 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinRideRoom', (roomId) => {
-    console.log(`Client ${socket.id} joined room ${roomId}`);
+    // console.log(`Client ${socket.id} joined room ${roomId}`);
     socket.join(roomId);
   });
 
   socket.on('disconnect', () => {
-    console.log(`Client ${socket.id} disconnected`);
+    // console.log(`Client ${socket.id} disconnected`);
   });
 });
 

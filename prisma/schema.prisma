@@ -26,6 +26,7 @@ model User {
   isAvailable        Boolean?
   userType           String
   isProfileCompleted Boolean
+  totalPassenger     Int?
   ParentRides        Ride[]         @relation("ParentRides")
   DriverRides        Ride[]         @relation("DriverRides")
   Conversation       Conversation?  @relation(fields: [conversationId], references: [id])
