@@ -39,6 +39,7 @@ model Ride {
   id          Int      @id @default(autoincrement())
   pickup      String
   dropoff     String
+  passengers  Int
   createdAt   DateTime @default(now())
   isAccepted  Boolean?
   isCompleted Boolean

@@ -36,6 +36,7 @@ export async function addRide(req, res) {
     parentId,
     driverId,
     pickup,
+    passengers,
     dropoff,
     isCompleted
   } = req.body;
@@ -46,6 +47,7 @@ export async function addRide(req, res) {
         parentId,
         driverId,
         pickup,
+        passengers:parseInt(passengers),
         dropoff,
         isCompleted
       },
@@ -117,7 +119,7 @@ export async function getDriverRides(req, res) {
           { isAccepted: true },
           { isAccepted: null }
         ],
-        isCompleted:false
+        isCompleted: false
       },
       include: {
         parent: true,
@@ -158,7 +160,7 @@ export async function getActiveRideForParent(req, res) {
       where: {
         parentId: parseInt(userId),
         isAccepted: true,
-        isCompleted:false
+        isCompleted: false
       },
       include: {
         driver: true,
