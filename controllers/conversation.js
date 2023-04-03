@@ -36,7 +36,6 @@ export async function createMessages(req, res) {
     const createConversation = await prisma.message.create({
       data: { content, senderId, conversationId },
     });
-    console.log(req.body.acceptedBy)
     io.to(req.body.acceptedBy).emit('message', { acceptedBy: req.body.acceptedBy,senderId:senderId });
     res.status(200).json(createConversation)
   } catch (error) {

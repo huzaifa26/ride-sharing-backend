@@ -2,7 +2,6 @@ import { prisma } from "../index.js";
 
 export async function getHistory(req, res) {
   const { id, userType } = req.params;
-  console.log(req.params);
 
   if (userType === "Parent") {
     try {

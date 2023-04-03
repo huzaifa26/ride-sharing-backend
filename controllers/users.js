@@ -72,7 +72,6 @@ export async function getActiveRidesForParent(req, res) {
         createdAt: "desc",
       },
     });
-    console.log(ride);
     res.status(200).json(ride);
   } catch (err) {
     console.error(err);
@@ -82,7 +81,6 @@ export async function getActiveRidesForParent(req, res) {
 
 export async function updateRecord(req, res) {
   const { id } = req.body;
-  console.log(id);
   const {
     criminalRecord,
     isInsured,
@@ -126,7 +124,6 @@ export async function updateRecord(req, res) {
 export async function updateProfile(req,res){
   const { id } = req.body;
   const newData={...req.body};
-  console.log(newData);
   try {
     const updatedProfile = await prisma.user.update({
       where: {
@@ -134,8 +131,6 @@ export async function updateProfile(req,res){
       },
       data: req.body,
     });
-
-    console.log(updatedProfile);
 
     // const user=await prisma.user.findUnique({
     //   where:{

@@ -115,8 +115,8 @@ export async function rideRequestAction(req, res) {
       }
     })
 
-    io.to(req.body.acceptedBy).emit('rideRequest', { isAccepted: isAccepted });
-    io.to(req.body.acceptedBy).emit('rideRequestAccepted', { isAccepted: isAccepted });
+    io.emit('rideRequestAccepted', { isAccepted: isAccepted,isCompleted:false });
+    io.to(req.body.acceptedBy).emit('rideRequestAccepted', { isAccepted: isAccepted,isCompleted:false});
     res.status(200).json(ride);
   } catch (error) {
     console.error(error);
@@ -127,7 +127,6 @@ export async function rideRequestAction(req, res) {
 
 export async function getDriverRides(req, res) {
   const { driverId } = req.params;
-  console.log(driverId)
   try {
     const driverRides = await prisma.ride.findMany({
       where: {
@@ -142,7 +141,6 @@ export async function getDriverRides(req, res) {
         parent: true,
       },
     })
-    console.log(driverRides);
     res.status(200).json(driverRides);
   } catch (error) {
     console.log(error);
@@ -178,7 +176,9 @@ export async function markRideComplete(req, res) {
       }
     })
 
-    io.to(acceptedBy).emit('rideRequestAccepted', { message: "Ride completed" });
+    io.emit('rideRequestAccepted', { isCompleted: false });
+    io.emit('rideRequest', { message: "Ride completed" });
+    io.to(acceptedBy).emit('rideRequestAccepted', { isAccepted: acceptedBy,isCompleted:true });
     res.status(200).json(driverRides);
   } catch (error) {
     console.log(error);
@@ -202,7 +202,6 @@ export async function getActiveRideForParent(req, res) {
         createdAt: "desc",
       },
     })
-    console.log(parentActiveRides);
     res.status(200).json(parentActiveRides);
   } catch (error) {
     console.log(error);
